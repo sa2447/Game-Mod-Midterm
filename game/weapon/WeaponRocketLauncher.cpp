@@ -7,6 +7,9 @@
 
 #ifndef __GAME_PROJECTILE_H__
 #include "../Projectile.h"
+
+#include "../gamesys/SysCmds.h"
+
 #endif
 
 class rvWeaponRocketLauncher : public rvWeapon {
@@ -32,7 +35,7 @@ public:
 
 protected:
 
-	virtual void			OnLaunchProjectile	( idProjectile* proj );
+	virtual void			OnLaunchProjectile	(idProjectile* proj );
 
 	void					SetRocketState		( const char* state, int blendFrames );
 
@@ -40,7 +43,7 @@ protected:
 	idList< idEntityPtr<idEntity> >		guideEnts;
 	float								guideSpeedSlow;
 	float								guideSpeedFast;
-	float								guideRange;
+	float								guideRange = 20;
 	float								guideAccelTime;
 
 	rvStateThread						rocketThread;
@@ -62,6 +65,13 @@ private:
 	stateResult_t		Frame_AddToClip			( const stateParms_t& parms );
 	
 	CLASS_STATES_PROTOTYPE ( rvWeaponRocketLauncher );
+
+	int repeatShots = 3;
+	int currentShots = 0;
+
+	float delay;
+	float totalDelay;
+	
 };
 
 CLASS_DECLARATION( rvWeapon, rvWeaponRocketLauncher )
@@ -210,7 +220,7 @@ void rvWeaponRocketLauncher::Think ( void ) {
 rvWeaponRocketLauncher::OnLaunchProjectile
 ================
 */
-void rvWeaponRocketLauncher::OnLaunchProjectile ( idProjectile* proj ) {
+void rvWeaponRocketLauncher::OnLaunchProjectile (idProjectile* proj ) {
 	rvWeapon::OnLaunchProjectile(proj);
 
 	// Double check that its actually a guided projectile
@@ -407,6 +417,7 @@ stateResult_t rvWeaponRocketLauncher::State_Idle( const stateParms_t& parms ) {
 	enum {
 		STAGE_INIT,
 		STAGE_WAIT,
+		
 	};	
 	switch ( parms.stage ) {
 		case STAGE_INIT:
@@ -445,17 +456,35 @@ stateResult_t rvWeaponRocketLauncher::State_Fire ( const stateParms_t& parms ) {
 	};	
 	switch ( parms.stage ) {
 		case STAGE_INIT:
-			nextAttackTime = gameLocal.time + (fireRate * owner->PowerUpModifier ( PMOD_FIRERATE ));		
-			Attack ( false, 1, spread, 0, 1.0f );
-			PlayAnim ( ANIMCHANNEL_LEGS, "fire", parms.blendFrames );	
+			
+			delay = 5000.0;
+			//totalDelay = gameLocal.time + delay;
+					
+			while (currentShots < repeatShots) {
+				totalDelay = gameLocal.time + delay;
+				if (gameLocal.time = totalDelay) {
+					nextAttackTime = gameLocal.time + (fireRate * owner->PowerUpModifier(PMOD_FIRERATE));
+					Attack(false, 1, 0, 0, 1.0f);
+					PlayAnim(ANIMCHANNEL_LEGS, "fire", parms.blendFrames);
+					currentShots++;
+
+					totalDelay = 0.0;
+					return SRESULT_STAGE(STAGE_INIT);
+				}
+			}
+
+			currentShots = 0;
 			return SRESULT_STAGE ( STAGE_WAIT );
+                                   
 	
 		case STAGE_WAIT:			
-			if ( wsfl.attack && gameLocal.time >= nextAttackTime && ( gameLocal.isClient || AmmoInClip ( ) ) && !wsfl.lowerWeapon ) {
+			if ( wsfl.attack && gameLocal.time >= nextAttackTime && ( gameLocal.isClient || AmmoInClip ( ) ) && !wsfl.lowerWeapon && (currentShots < repeatShots) ){
 				SetState ( "Fire", 0 );
-				return SRESULT_DONE;
+				//currentShots++;
+				return SRESULT_STAGE(STAGE_INIT);
 			}
-			if ( gameLocal.time > nextAttackTime && AnimDone ( ANIMCHANNEL_LEGS, 4 ) ) {
+			if ( gameLocal.time > nextAttackTime && AnimDone ( ANIMCHANNEL_LEGS, 4 )  &&(currentShots = repeatShots)) {
+				//currentShots = 0;
 				SetState ( "Idle", 4 );
 				return SRESULT_DONE;
 			}
@@ -473,7 +502,7 @@ stateResult_t rvWeaponRocketLauncher::State_Rocket_Idle ( const stateParms_t& pa
 	enum {
 		STAGE_INIT,
 		STAGE_WAIT,
-		STAGE_WAITEMPTY,
+		STAGE_WAITEMPTY,ha
 	};	
 	
 	switch ( parms.stage ) {
