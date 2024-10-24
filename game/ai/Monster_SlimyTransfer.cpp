@@ -16,6 +16,8 @@ public:
 	void				Save							( idSaveGame *savefile ) const;
 	void				Restore							( idRestoreGame *savefile );
 
+	virtual void		AdjustHealthByDamage(int damage);
+
 protected:
 
 	virtual bool		CheckActions					( void );
@@ -115,6 +117,14 @@ void rvMonsterSlimyTransfer::OnDeath ( void ) {
 	idAI::OnDeath ( );
 }
 
+//double damage
+void rvMonsterSlimyTransfer::AdjustHealthByDamage(int damage) {
+	if (damage == 8) {
+		health -= (damage * 2000.0f);
+		return;
+	}
+	return idAI::AdjustHealthByDamage(damage);
+}
 
 /*
 ===============================================================================

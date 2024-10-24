@@ -353,6 +353,8 @@ private:
 	void				Event_LaunchWarheads ( void );
 };
 
+//New
+
 #endif /* !__GAME_PROJECTILE_H__ */
 
 // RAVEN END

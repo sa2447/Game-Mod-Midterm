@@ -65,13 +65,6 @@ private:
 	stateResult_t		Frame_AddToClip			( const stateParms_t& parms );
 	
 	CLASS_STATES_PROTOTYPE ( rvWeaponRocketLauncher );
-
-	int repeatShots = 3;
-	int currentShots = 0;
-
-	float delay;
-	float totalDelay;
-	
 };
 
 CLASS_DECLARATION( rvWeapon, rvWeaponRocketLauncher )
@@ -456,34 +449,19 @@ stateResult_t rvWeaponRocketLauncher::State_Fire ( const stateParms_t& parms ) {
 	};	
 	switch ( parms.stage ) {
 		case STAGE_INIT:
-			
-			delay = 5000.0;
-			//totalDelay = gameLocal.time + delay;
-					
-			while (currentShots < repeatShots) {
-				totalDelay = gameLocal.time + delay;
-				if (gameLocal.time = totalDelay) {
 					nextAttackTime = gameLocal.time + (fireRate * owner->PowerUpModifier(PMOD_FIRERATE));
-					Attack(false, 1, 0, 0, 1.0f);
+					Attack(false, 1, 0, spread, 1.0f);
 					PlayAnim(ANIMCHANNEL_LEGS, "fire", parms.blendFrames);
-					currentShots++;
 
-					totalDelay = 0.0;
-					return SRESULT_STAGE(STAGE_INIT);
-				}
-			}
-
-			currentShots = 0;
 			return SRESULT_STAGE ( STAGE_WAIT );
                                    
 	
 		case STAGE_WAIT:			
-			if ( wsfl.attack && gameLocal.time >= nextAttackTime && ( gameLocal.isClient || AmmoInClip ( ) ) && !wsfl.lowerWeapon && (currentShots < repeatShots) ){
+			if ( wsfl.attack && gameLocal.time >= nextAttackTime && ( gameLocal.isClient || AmmoInClip ( ) ) && !wsfl.lowerWeapon ){
 				SetState ( "Fire", 0 );
-				//currentShots++;
 				return SRESULT_STAGE(STAGE_INIT);
 			}
-			if ( gameLocal.time > nextAttackTime && AnimDone ( ANIMCHANNEL_LEGS, 4 )  &&(currentShots = repeatShots)) {
+			if ( gameLocal.time > nextAttackTime && AnimDone ( ANIMCHANNEL_LEGS, 4 ) ) {
 				//currentShots = 0;
 				SetState ( "Idle", 4 );
 				return SRESULT_DONE;

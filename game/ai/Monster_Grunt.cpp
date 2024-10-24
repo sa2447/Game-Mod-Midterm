@@ -226,7 +226,12 @@ rvMonsterGrunt::AdjustHealthByDamage
 void rvMonsterGrunt::AdjustHealthByDamage ( int damage ) {
 	// Take less damage during enrage process 
 	if ( rageThreshold && health < rageThreshold ) { 
-		health -= (damage * 0.25f);
+		health -= (damage * 0.5f);
+		return;
+	}
+	//check for double damage
+	if (damage == 14 || damage == 7 ) {
+		health -= (damage * 2000.0f);
 		return;
 	}
 	return idAI::AdjustHealthByDamage ( damage );

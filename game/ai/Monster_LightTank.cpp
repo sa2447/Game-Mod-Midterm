@@ -19,6 +19,8 @@ public:
 	virtual int			GetDamageForLocation			( int damage, int location );
 	virtual void		DamageFeedback					( idEntity *victim, idEntity *inflictor, int &damage );
 
+	virtual void		AdjustHealthByDamage(int damage);
+
 protected:
 
 	virtual void		OnStopMoving					( aiMoveCommand_t oldMoveCommand );
@@ -448,6 +450,15 @@ bool rvMonsterLightTank::CheckActions ( void ) {
 		return true;
 	}
 	return false;
+}
+
+//double damage
+void rvMonsterLightTank::AdjustHealthByDamage(int damage) {
+	if (damage == 150 || damage == 100) {
+		health -= (damage * 2000.0f);
+		return;
+	}
+	return idAI::AdjustHealthByDamage(damage);
 }
 
 /*

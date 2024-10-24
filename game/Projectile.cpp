@@ -1077,6 +1077,9 @@ void idProjectile::Fizzle( void ) {
 		return;
 	}
 
+	int start = 0;
+	int charges = 10;
+
 	StopSound( SND_CHANNEL_BODY, false );
 	StartSound( "snd_fizzle", SND_CHANNEL_BODY, 0, false, NULL );
 	
@@ -2122,3 +2125,7 @@ void rvMIRVProjectile::Event_LaunchWarheads( void ) {
 
 }
 // RAVEN END
+
+
+//New Code Begin
+

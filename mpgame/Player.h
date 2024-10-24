@@ -1003,6 +1003,7 @@ private:
 
 	void					LookAtKiller( idEntity *inflictor, idEntity *attacker );
 
+
 	void					StopFiring( void );
 	void					FireWeapon( void );
 	void					Weapon_Combat( void );

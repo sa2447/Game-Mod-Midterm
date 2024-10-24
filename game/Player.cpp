@@ -4301,11 +4301,7 @@ float idPlayer::PowerUpModifier( int type ) {
 	if ( PowerUpActive( POWERUP_HASTE ) ) {
 		switch ( type ) {
 			case PMOD_SPEED:	
-				mod *= 1.3f;
-				break;
-
-			case PMOD_FIRERATE:
-				mod *= 0.7f;
+				mod *= 0.1f;
 				break;
 		}
 	}
@@ -4630,7 +4626,7 @@ bool idPlayer::GivePowerUp( int powerup, int time, bool team ) {
 		return false;
 	}
 
-	if ( gameLocal.isServer ) {
+	if ( gameLocal.isClient ) {
 		idBitMsg	msg;
 		byte		msgBuf[MAX_EVENT_PARAM_SIZE];
 
@@ -4760,7 +4756,7 @@ idPlayer::ClearPowerup
 ==============
 */
 void idPlayer::ClearPowerup( int i ) {
-	if ( gameLocal.isServer ) {
+	if ( gameLocal.isClient) {
 		idBitMsg	msg;
 		byte		msgBuf[MAX_EVENT_PARAM_SIZE];
 
@@ -4865,7 +4861,7 @@ void idPlayer::UpdatePowerUps( void ) {
 			}
 
 			continue;
-		} else if ( inventory.powerupEndTime[ i ] != -1 && gameLocal.isServer ) {
+		} else if ( inventory.powerupEndTime[ i ] != -1 && gameLocal.isClient ) {
 			// This particular powerup needs to respawn in a special way.
 			if ( i == POWERUP_DEADZONE ) {
 				gameLocal.mpGame.GetGameState()->SpawnDeadZonePowerup();
@@ -4903,7 +4899,7 @@ void idPlayer::UpdatePowerUps( void ) {
 
 				if ( health < healthBoundary ) {
 					// only actually give health on the server
-					if( gameLocal.isServer ) {
+					if( gameLocal.isClient ) {
 						health += healthTic;
 						if ( health > (healthBoundary * 1.1f) ) {
 							health = healthBoundary * 1.1f;
@@ -4912,7 +4908,7 @@ void idPlayer::UpdatePowerUps( void ) {
 					StartSound ( "snd_powerup_regen", SND_CHANNEL_POWERUP, 0, false, NULL );
 					nextHealthPulse = gameLocal.time + HEALTH_PULSE;
 				} else if ( health < (healthBoundary * 2) ) {
-					if( gameLocal.isServer ) {
+					if( gameLocal.isClient ) {
 						health += healthTic / 3;
 						if ( health > (healthBoundary * 2) ) {
 							health = healthBoundary * 2;
@@ -4922,7 +4918,7 @@ void idPlayer::UpdatePowerUps( void ) {
 					nextHealthPulse = gameLocal.time + HEALTH_PULSE;
 				}	
 			// Health above max technically isnt a powerup but functions as one so handle it here
-			} else if ( health > inventory.maxHealth && gameLocal.isServer ) { 
+			} else if ( health > inventory.maxHealth && gameLocal.isClient ) { 
 				nextHealthPulse = gameLocal.time + HEALTH_PULSE;
 				health--;
 			}
@@ -4931,7 +4927,7 @@ void idPlayer::UpdatePowerUps( void ) {
 	}
 
 	// Regenerate ammo
-	if( gameLocal.isServer && PowerUpActive( POWERUP_AMMOREGEN ) ) {
+	if( gameLocal.isClient && PowerUpActive( POWERUP_AMMOREGEN ) ) {
 		for( int i = 0; i < MAX_WEAPONS; i++ ) {
 			if( inventory.weapons & ( 1 << i ) ) {
 				int ammoIndex	= inventory.AmmoIndexForWeaponIndex( i );

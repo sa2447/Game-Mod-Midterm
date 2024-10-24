@@ -18,6 +18,8 @@ public:
 	void				Save							( idSaveGame *savefile ) const;
 	void				Restore							( idRestoreGame *savefile );
 
+	virtual void		AdjustHealthByDamage(int damage);
+
 protected:
 
 	virtual void		OnStopMoving					( aiMoveCommand_t oldMoveCommand );
@@ -404,6 +406,15 @@ bool rvMonsterStroggMarine::CheckActions ( void ) {
 		return true;
 	}
 	return false;
+}
+
+//check for double damage
+void rvMonsterStroggMarine::AdjustHealthByDamage(int damage) {
+	if (damage == 15) {
+		health -= (damage * 2000.0f);
+		return;
+	}
+	return idAI::AdjustHealthByDamage(damage);
 }
 
 /*

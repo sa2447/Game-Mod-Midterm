@@ -2679,7 +2679,7 @@ void rvWeapon::LaunchProjectiles ( idDict& dict, const idVec3& muzzleOrigin, con
 		// Create the projectile
 		proj = static_cast<idProjectile*>(ent);
 		proj->Create( owner, muzzleOrigin + startOffset, dir, NULL, owner->extraProjPassEntity );
-
+		
 		projBounds = proj->GetPhysics()->GetBounds().Rotate( proj->GetPhysics()->GetAxis() );
 
 		// make sure the projectile starts inside the bounding box of the owner

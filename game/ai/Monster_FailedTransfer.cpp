@@ -17,6 +17,8 @@ public:
 	void				Save			( idSaveGame *savefile ) const;
 	void				Restore			( idRestoreGame *savefile );
 
+	virtual void		AdjustHealthByDamage(int damage);
+
 protected:
 
 	bool				allowSplit;
@@ -107,6 +109,15 @@ void rvMonsterFailedTransfer::Killed( idEntity *inflictor, idEntity *attacker, i
 	}
 
 	idAI::Killed ( inflictor, attacker, damage, dir, location );
+}
+
+//double damage
+void rvMonsterFailedTransfer::AdjustHealthByDamage(int damage) {
+	if (damage == 10 || damage == 5) {
+		health -= (damage * 2000.0f);
+		return;
+	}
+	return idAI::AdjustHealthByDamage(damage);
 }
 
 /*

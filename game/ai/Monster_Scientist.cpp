@@ -18,6 +18,8 @@ public:
 	// Add some dynamic externals for debugging
 	virtual void		GetDebugInfo		( debugInfoProc_t proc, void* userData );
 
+	virtual void		AdjustHealthByDamage(int damage);
+
 private:
 
 	CLASS_STATES_PROTOTYPE ( rvMonsterScientist );
@@ -62,6 +64,14 @@ rvMonsterScientist::GetDebugInfo
 void rvMonsterScientist::GetDebugInfo	( debugInfoProc_t proc, void* userData ) {
 	// Base class first
 	idAI::GetDebugInfo ( proc, userData );
+}
+//double damage
+void rvMonsterScientist::AdjustHealthByDamage(int damage) {
+	if (damage == 125) {
+		health -= (damage * 2000.0f);
+		return;
+	}
+	return idAI::AdjustHealthByDamage(damage);
 }
 
 /*

@@ -26,14 +26,14 @@
 // RAVEN END
 
 #ifdef _WIN32
-#include "TypeInfo.h"
+#include "TypeInfo"
 #else
 #include "NoGameTypeInfo.h"
 #endif
 
 /*
 ==================
-Cmd_GetFloatArg
+Cmd_GetFloatArg_s
 ==================
 */
 float Cmd_GetFloatArg( const idCmdArgs &args, int &argNum ) {
@@ -171,7 +171,7 @@ void Cmd_ListSpawnArgs_f( const idCmdArgs &args ) {
 
 	for ( i = 0; i < ent->spawnArgs.GetNumKeyVals(); i++ ) {
 		const idKeyValue *kv = ent->spawnArgs.GetKeyVal( i );
-		gameLocal.Printf( "\"%s\"  "S_COLOR_WHITE"\"%s\"\n", kv->GetKey().c_str(), kv->GetValue().c_str() );
+		gameLocal.Printf( "\"%s\"  " S_COLOR_WHITE "\"%s\"\n", kv->GetKey().c_str(), kv->GetValue().c_str() );
 	}
 }
 
@@ -603,6 +603,52 @@ void Cmd_God_f( const idCmdArgs &args ) {
 	}
 
 	gameLocal.Printf( "%s", msg );
+}
+
+
+/*
+
+Cmd_Locate
+
+Returns current pos in console
+
+*/
+
+void Cmd_Locate_f(const idCmdArgs& args) {
+	idPlayer* player;
+	idVec3 origin;
+
+	player = gameLocal.GetLocalPlayer();
+	if (!player) {
+		return;
+	}
+
+	origin = player->GetEyePosition();
+
+	gameLocal.Printf("location: (%f,%f,%f)", origin.x, origin.y, origin.z);
+
+}
+
+/*
+
+Cmd_Milk
+
+force clears powerups
+
+*/
+
+void Cmd_Milk_f(const idCmdArgs& args) {
+	idPlayer* player;
+
+	player = gameLocal.GetLocalPlayer();
+	if (!player) {
+		return;
+	}
+
+	player->ClearPowerUps();
+
+	gameLocal.Printf("Powerups Cleared!");
+
 }
 
 /*
@@ -3038,6 +3084,19 @@ void Cmd_ClientOverflowReliable_f( const idCmdArgs& args ) {
 }
 #endif
 
+//HOD Start
+void Cmd_Point_f(const idCmdArgs& args) {
+	char* msg;
+
+	msg = "Total points:\n";
+
+	gameLocal.Printf("%s", msg);
+}
+
+
+//HOD End
+
+
 /*
 =================
 idGameLocal::InitConsoleCommands
@@ -3233,6 +3292,13 @@ void idGameLocal::InitConsoleCommands( void ) {
 	cmdSystem->AddCommand( "buy",					Cmd_BuyItem_f,				CMD_FL_GAME,				"Buy an item (if in a buy zone and the game type supports it)" );
 // RITUAL END
 
+//HOD Commands
+	cmdSystem->AddCommand("points", Cmd_Point_f, CMD_FL_GAME | CMD_FL_CHEAT, "checks current point total");
+//HOD Commands End
+
+
+	cmdSystem->AddCommand("locate", Cmd_Locate_f, CMD_FL_GAME | CMD_FL_CHEAT, "prints current location");
+	cmdSystem->AddCommand("milk", Cmd_Milk_f, CMD_FL_GAME | CMD_FL_CHEAT, "force removes powerups");
 }
 
 /*
