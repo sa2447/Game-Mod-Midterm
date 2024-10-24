@@ -22,3 +22,20 @@ Railgun - Scientist
 Each enemy can drop certian items which can be collected by disabling arcade mode
 Open shop with " " key (WIP)
 Enemies will spawn in waves of varying difficulty (WIP)
+
+
+Deliverables:
+Specific
+1 - add a arcade shooter mode (walk in stop, movement like house of dead)
+2 - monsters spawn in waves until room is complete
+3 - 5 different weapons with affinities against certain enemies
+4 - 5 house of the dead pickups
+5 - Point Shop
+Common
+1- A README with instructions on how to play your game and see all of your new feature
+2 - A shortcut that automatically Launches your Mod
+3 - All custom assets (def files, models, sounds, etc) placed in a pak001.pak file
+4 - An In-Game Help Screen to explain your mod
+5 - Custom User Interface(HUD or other in-game menus) for your game's features
+
+
