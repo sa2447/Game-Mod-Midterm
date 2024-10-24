@@ -23,6 +23,8 @@ Each enemy can drop certian items which can be collected by disabling arcade mod
 Open shop with " " key (WIP)
 Enemies will spawn in waves of varying difficulty (WIP)
 
+In Game help screen is under "Load Game"
+
 
 Deliverables:
 Specific
